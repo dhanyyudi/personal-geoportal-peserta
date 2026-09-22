@@ -4,7 +4,7 @@ import path from "path";
 import { db } from "../../../../../lib/db";
 import { requireAuth } from "../../../../../lib/auth/verifyBearerToken";
 
-export async function POST(request) {
+export async function DELETE(request) {
     // 1. Validasi Autentikasi
     const { payload, error, status } = requireAuth(request, "admin");
     if (error) {
@@ -12,8 +12,10 @@ export async function POST(request) {
     }
 
     try {
-        const formData = await request.formData();
-        const data_3d_id = formData.get("data_3d_id");
+        // data_3d_id diambil dari query string, karena permintaan DELETE tidak
+        // seharusnya memuat body.
+        const { searchParams } = new URL(request.url);
+        const data_3d_id = searchParams.get("data_3d_id");
 
         if (!data_3d_id) {
             return NextResponse.json({ message: "ID data tidak boleh kosong" }, { status: 400 });

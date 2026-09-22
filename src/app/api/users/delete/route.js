@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { requireAuth } from "../../../../../lib/auth/verifyBearerToken";
 import { db } from "../../../../../lib/db";
 
-export async function POST(request) {
+export async function DELETE(request) {
     const { payload, error, status } = requireAuth(request, "super_admin");
     if (error) {
         return NextResponse.json({ message: error }, { status });
     }
 
-    const data = await request.json();
+    // user_id diambil dari query string, bukan dari body. Permintaan DELETE
+    // umumnya tidak memuat body, sehingga membaca request.json() akan gagal
+    // sebelum pemeriksaan apa pun dijalankan.
+    const { searchParams } = new URL(request.url);
+    const data = { user_id: searchParams.get("user_id") };
 
     try {
         const deletedUser = await db.users.delete({
