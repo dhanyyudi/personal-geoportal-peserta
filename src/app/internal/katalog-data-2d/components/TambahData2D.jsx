@@ -33,7 +33,7 @@ const TambahData2D = ({ form, setForm, submitting, setSubmitting, onSuccess, onC
         body: formData,
       });
 
-      const result = await res.json();
+      const result = await bacaResponsJson(res);
 
       if (!res.ok || !result.success) {
         throw new Error(result.message || result.error || "Gagal menyimpan layer");
