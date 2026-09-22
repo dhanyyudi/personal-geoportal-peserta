@@ -3,7 +3,6 @@ import { requireAuth } from "../../../../../lib/auth/verifyBearerToken";
 import { db } from "../../../../../lib/db";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import { ROLE_DAPAT_DIBUAT } from "../../../../../lib/auth/roles";
 
 export async function POST(request) {
     const { payload, error, status } = requireAuth(request, "super_admin");
@@ -12,9 +11,7 @@ export async function POST(request) {
     }
 
     const data = await request.json();
-    // Daftar peran diambil dari roles.js supaya create dan update tidak
-    // memakai aturan yang berbeda.
-    const allowedRoles = ROLE_DAPAT_DIBUAT;
+    const allowedRoles = ["editor", "admin"]; // daftar role yang diizinkan untuk dibuat
 
     if (data.role && !allowedRoles.includes(data.role)) {
         return NextResponse.json({ message: "Role tidak valid" }, { status: 400 });
@@ -31,24 +28,14 @@ export async function POST(request) {
     }
 
     try {
-        // Kolom yang dikembalikan dibatasi. Tanpa select, Prisma mengembalikan
-        // seluruh kolom termasuk password, sehingga hash kata sandi ikut
-        // terkirim ke pemanggil API.
         const newUser = await db.users.create({
             data: {
                 user_id: crypto.randomUUID(),
+                name: data.name,
                 email: data.email,
-                nama: data.nama,
                 password: password,
                 role: data.role,
                 is_active: data.is_active,
-            },
-            select: {
-                user_id: true,
-                nama: true,
-                email: true,
-                role: true,
-                is_active: true,
             },
         });
 

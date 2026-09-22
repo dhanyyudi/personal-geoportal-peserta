@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAuth } from "../../../../../lib/auth/verifyBearerToken";
 import { db } from "../../../../../lib/db";
 
-export async function PATCH(request) {
+export async function POST(request) {
     const { payload, error, status } = requireAuth(request, "super_admin");
     if (error) {
         return NextResponse.json({ message: error }, { status });
