@@ -123,7 +123,11 @@ export default function CatalogPanel3D({ open, viewer, addedModelsRef }) {
       position,
       orientation,
       model: {
-        uri: item.url,
+        // Alamat dibangun dari id, bukan dari url yang tersimpan. Alamat yang
+        // tersimpan dibuat saat berkas diunggah, sehingga masih menunjuk ke
+        // alamat aplikasi yang lama setelah peserta pindah dari alamat IP ke
+        // subdomain, dan modelnya gagal dimuat.
+        uri: `/portal/api/katalog-data-3d/models/${item.data_3d_id}`,
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         shadows: Cesium.ShadowMode.ENABLED,
       },
