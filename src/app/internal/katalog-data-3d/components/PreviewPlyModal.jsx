@@ -287,8 +287,8 @@ export default function PreviewPlyModal({ openPreview, item, handleClosePreview 
             </Box>
 
             <Typography variant="caption" sx={{ color: "#6B7280", mt: 1 }}>
-                Pratinjau 3D Gaussian Splat. Geser untuk memutar, gulir untuk memperbesar. Bila
-                orientasinya terbalik, sesuaikan Heading, Pitch, dan Roll lewat Ubah Data.
+                Pratinjau 3D Gaussian Splat. Geser untuk memutar, gulir untuk memperbesar.
+                Arah hadap dan kemiringan dapat disesuaikan lewat Ubah Data.
             </Typography>
         </Box>
     );
