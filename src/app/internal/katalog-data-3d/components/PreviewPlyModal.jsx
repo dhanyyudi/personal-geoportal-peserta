@@ -146,8 +146,15 @@ export default function PreviewPlyModal({ openPreview, item, handleClosePreview 
                 const pitch = Number(item.pitch) || 0;
                 const roll = Number(item.roll) || 0;
 
+                // Berkas Gaussian Splat memakai konvensi COLMAP, yaitu sumbu Y
+                // menghadap ke bawah, sedangkan penampil ini memakai Y ke atas.
+                // Tanpa pembalikan, seluruh model tampil terbalik: tanah di atas
+                // dan bangunan menggantung ke bawah. Diuji dengan mengisi pitch
+                // 180 lewat Ubah Data, dan modelnya menjadi tegak. Pembalikannya
+                // karena itu dipasang di sini, supaya peserta tidak perlu
+                // mengisinya sendiri untuk setiap model.
                 const euler = new THREE.Euler(
-                    THREE.MathUtils.degToRad(pitch),
+                    Math.PI + THREE.MathUtils.degToRad(pitch),
                     THREE.MathUtils.degToRad(heading),
                     THREE.MathUtils.degToRad(roll),
                     "XYZ"
