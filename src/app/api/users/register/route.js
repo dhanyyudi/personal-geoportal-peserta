@@ -39,7 +39,7 @@ export async function POST(request) {
                 name: data.name,
                 email: data.email,
                 password: hashedPassword,
-                role: "editor", // Default role
+                role: "viewer", // Peran bawaan untuk pendaftar baru
                 is_active: false, // Default status non-aktif
             },
         });
