@@ -107,6 +107,17 @@ export default function KatalogData3D({ accessToken, role }) {
   };
 
   const handleClosePreview = () => {
+    // Lepaskan fokus sebelum modal ditutup. MUI menandai modal yang sedang
+    // ditutup dengan aria-hidden, dan peramban menolak menyembunyikan elemen
+    // yang masih memegang fokus:
+    //
+    //   Blocked aria-hidden on an element because its descendant retained focus
+    //
+    // Melepas fokus lebih dahulu membuat peringatan itu tidak muncul, dan
+    // sekaligus membuat pembaca layar tidak kehilangan jejak.
+    if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setOpenPreview(false);
     setFocusItem(null);
   };

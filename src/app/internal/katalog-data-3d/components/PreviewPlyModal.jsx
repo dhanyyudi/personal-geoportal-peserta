@@ -106,26 +106,30 @@ function bingkaiModel(viewer, THREE) {
 // halaman katalog bagi peserta yang hanya memakai model .glb.
 export default function PreviewPlyModal({ openPreview, item, handleClosePreview }) {
     const containerRef = useRef(null);
+    const panggungRef = useRef(null);
     const viewerRef = useRef(null);
     const [status, setStatus] = useState("idle");
     const [errorMessage, setErrorMessage] = useState("");
     const [persen, setPersen] = useState(0);
 
     useEffect(() => {
-        if (!openPreview || !item?.data_3d_id || !containerRef.current) return;
+        if (!openPreview || !item?.data_3d_id || !panggungRef.current) return;
 
         let cancelled = false;
         setStatus("memuat");
         setErrorMessage("");
         setPersen(0);
 
-        // Wadah ini dibuat di luar pohon React, karena pustaka penampil
-        // menambah dan melepas elemennya sendiri. Bila React ikut melacaknya,
-        // proses unmount bentrok dengan proses bersih-bersih pustaka.
-        const wrapperEl = document.createElement("div");
-        wrapperEl.style.width = "100%";
-        wrapperEl.style.height = "100%";
-        containerRef.current.appendChild(wrapperEl);
+        // Panggung ini dirender React, bukan dibuat lewat document.createElement.
+        // Sebelumnya wadah dibuat di luar React lalu ditempelkan ke container
+        // milik React, dan saat modal ditutup React mencoba melepas simpul yang
+        // tidak dikenalinya:
+        //
+        //   NotFoundError: Failed to execute 'removeChild' on 'Node'
+        //
+        // Dengan panggung dimiliki React, seluruh pohonnya dilepas React sendiri
+        // dan kita hanya perlu menutup penampilnya.
+        const wrapperEl = panggungRef.current;
 
         Promise.all([import("@mkkellogg/gaussian-splats-3d"), import("three")])
             .then(([GaussianSplats3D, THREE]) => {
@@ -212,13 +216,8 @@ export default function PreviewPlyModal({ openPreview, item, handleClosePreview 
                 viewerRef.current = null;
             }
 
-            try {
-                if (wrapperEl.parentNode) {
-                    wrapperEl.parentNode.removeChild(wrapperEl);
-                }
-            } catch (e) {
-                // Wadah mungkin sudah dilepas oleh dispose(). Aman diabaikan.
-            }
+            // Tidak ada simpul yang dilepas di sini. Panggungnya milik React,
+            // jadi React yang membuangnya saat modal ditutup.
         };
     }, [openPreview, item]);
 
@@ -283,7 +282,11 @@ export default function PreviewPlyModal({ openPreview, item, handleClosePreview 
                         height: "100%",
                         visibility: status === "error" ? "hidden" : "visible",
                     }}
-                />
+                >
+                    {/* Panggung tempat pustaka penampil menempel. Dimiliki React,
+                        sehingga tidak ada simpul yang ditambahkan diam-diam. */}
+                    <Box ref={panggungRef} sx={{ width: "100%", height: "100%" }} />
+                </Box>
             </Box>
 
             <Typography variant="caption" sx={{ color: "#6B7280", mt: 1 }}>
