@@ -72,7 +72,7 @@ export default function PreviewCesiumModal({ openPreview, item, handleClosePrevi
         const pitchDeg = Number.isFinite(Number(item.pitch)) ? Number(item.pitch) : 0;
         const rollDeg = Number.isFinite(Number(item.roll)) ? Number(item.roll) : 0;
 
-        if (!item.url || !Number.isFinite(lat) || !Number.isFinite(lon)) {
+        if (!item.data_3d_id || !Number.isFinite(lat) || !Number.isFinite(lon)) {
             setErrorMessage("URL file GLB atau koordinat tidak valid.");
             setStatus("error");
             return;
@@ -125,7 +125,7 @@ export default function PreviewCesiumModal({ openPreview, item, handleClosePrevi
                 position,
                 orientation,
                 model: {
-                    uri: `${item.url}?access_token=${accessToken}`,
+                    uri: `/portal/api/katalog-data-3d/models/${item.data_3d_id}?access_token=${accessToken}`,
                     scale: item.scale,
                     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
                 },

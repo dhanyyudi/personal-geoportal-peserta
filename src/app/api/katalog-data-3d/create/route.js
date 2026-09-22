@@ -52,7 +52,11 @@ export async function POST(request) {
         // Tulis file ke storage lokal
         await writeFile(filePath, buffer);
 
-        const fileUrl = `${process.env.NEXTAUTH_URL}/api/katalog-data-3d/models/${data_3d_id}`;
+        // Alamat disimpan relatif, tanpa domain. Alasannya, alamat aplikasi
+        // berganti dari alamat IP menjadi subdomain pada tahap berikutnya, dan
+        // alamat mutlak yang tersimpan akan menunjuk ke alamat lama. Alamat
+        // relatif dibaca dari domain yang sedang dipakai peramban.
+        const fileUrl = `/portal/api/katalog-data-3d/models/${data_3d_id}`;
 
         // 3. Simpan ke Database Prisma dengan UUID yang sama
         await db.katalog_data_3d.create({

@@ -112,7 +112,7 @@ export default function PreviewPlyModal({ openPreview, item, handleClosePreview 
     const [persen, setPersen] = useState(0);
 
     useEffect(() => {
-        if (!openPreview || !item?.url || !containerRef.current) return;
+        if (!openPreview || !item?.data_3d_id || !containerRef.current) return;
 
         let cancelled = false;
         setStatus("memuat");
@@ -156,7 +156,7 @@ export default function PreviewPlyModal({ openPreview, item, handleClosePreview 
                 const scaleValue = Number(item.scale) || 1;
 
                 return viewer
-                    .addSplatScene(item.url, {
+                    .addSplatScene(`/portal/api/katalog-data-3d/models/${item.data_3d_id}`, {
                         format: GaussianSplats3D.SceneFormat.Ply,
                         rotation: [quat.x, quat.y, quat.z, quat.w],
                         scale: [scaleValue, scaleValue, scaleValue],
